@@ -1,0 +1,9 @@
+{
+    "name": "DSPMoreRecipes",
+    "version_number": "1.0.1",
+    "website_url": "https://github.com/appuns/DSPMoreRecipes",
+    "description": "Add slots of recipes and allow to move recipes. レシピのスロットを追加しレシピを移動できるようになります。",
+    "dependencies": [
+    "xiaoye97-BepInEx-5.4.17"
+    ]
+}
