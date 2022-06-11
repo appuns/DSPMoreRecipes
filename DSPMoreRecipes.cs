@@ -23,11 +23,13 @@ using rail;
 using System.Runtime.Remoting.Contexts;
 using TranslationCommon.SimpleJSON;
 
+[module: UnverifiableCode]
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
 namespace DSPMoreRecipes
 {
 
-    [BepInPlugin("Appun.DSP.plugin.MoreRecipes", "DSPMoreRecipes", "1.0.1")]
+    [BepInPlugin("Appun.DSP.plugin.MoreRecipes", "DSPMoreRecipes", "1.0.3")]
     [BepInProcess("DSPGAME.exe")]
 
 
@@ -145,7 +147,7 @@ namespace DSPMoreRecipes
             resetText = resetButtonObj.GetComponentInChildren<Text>();
             editText = editButtonObj.GetComponentInChildren<Text>();
                             resetText.text = "Reset All".Translate();
-                editText.text = "Enter Editmode".Translate();
+                editText.text = "Enter Edit Mode".Translate();
 
 
             resetText.name = "resetText";
@@ -161,12 +163,11 @@ namespace DSPMoreRecipes
             destRecipeSelImageObj.transform.SetParent(recipegroup.transform, false);
             destRecipeSelImageObj.SetActive(false);
 
-
             //アイコン用画像
             selectedRecipeIcon = Instantiate(GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Replicator Window/recipe-tree/center-icon")) as GameObject;
             selectedRecipeIcon.transform.SetParent(recipegroup.transform, false);
             selectedRecipeIcon.transform.localPosition = new Vector3(200, 36, 0);
-            selectedRecipeIcon.transform.Find("place-text").GetComponentInChildren<Text>().text = "Serected Recipe".Translate();
+            selectedRecipeIcon.transform.Find("place-text").GetComponentInChildren<Text>().text = "Selected Recipe".Translate();
             Destroy(selectedRecipeIcon.transform.Find("vline-m").gameObject);
             Destroy(selectedRecipeIcon.transform.Find("hline-0").gameObject);
             Destroy(selectedRecipeIcon.transform.Find("hline-1").gameObject);
@@ -176,15 +177,14 @@ namespace DSPMoreRecipes
             Destroy(selectedRecipeIcon.transform.Find("time-text").gameObject);
             Destroy(selectedRecipeIcon.transform.Find("time-text").gameObject);
             selectedRecipeIcon.SetActive(false);
-
             //モードボタンのコピー
-            GameObject modetext = GameObject.Find("UI Root/Overlay Canvas/In Game/Function Panel/bg/mode-text");
+
+            GameObject modetext = GameObject.Find("UI Root/Overlay Canvas/In Game/Function Panel/bg-trans/mode-text");
             EditModeTextObj = Instantiate(modetext) as GameObject;
             EditModeTextObj.transform.SetParent(recipegroup.transform, false);
             EditModeTextObj.transform.localPosition = new Vector3(0, -3, 0);
             Destroy(EditModeTextObj.GetComponent<Localizer>());
             EditModeTextObj.GetComponent<Text>().text = "Edit mode".Translate();
-
 
 
 
@@ -202,7 +202,8 @@ namespace DSPMoreRecipes
             }
             GridIndexDictionary.Clear();
             File.WriteAllText(jsonFilePath, JSON.ToJson("{}"));
-            UIRoot.instance.uiGame.replicator.OnTechUnlocked(0, 0);
+
+            UIRoot.instance.uiGame.replicator.OnTechUnlocked(0, 0,true);
             editMode = true;
         }
 
@@ -215,7 +216,7 @@ namespace DSPMoreRecipes
                 EditModeTextObj.SetActive(true);
                 //LogManager.Logger.LogInfo("Edit mode on");
                 resetButtonObj.SetActive(true);
-                editText.text = "Exit Editmode".Translate();
+                editText.text = "Exit Edit Mode".Translate();
                 editMode = true;
                 destRecipeSelImageObj.gameObject.SetActive(true);
                 ref Image recipeSelImage = ref AccessTools.FieldRefAccess<UIReplicatorWindow, Image>(UIRoot.instance.uiGame.replicator, "recipeSelImage");
@@ -234,7 +235,7 @@ namespace DSPMoreRecipes
                 EditModeTextObj.SetActive(false);
                 //LogManager.Logger.LogInfo("Edit mode off");
                 resetButtonObj.SetActive(false);
-                editText.text = "Enter Editmode".Translate();
+                editText.text = "Enter Edit Mode".Translate();
                 editMode = false;
                 selectedRecipeID = -1;
                 destRecipeSelImageObj.gameObject.SetActive(false);
@@ -404,7 +405,7 @@ namespace DSPMoreRecipes
                         destRecipeSelImageObj.gameObject.SetActive(false);
                         ref Image recipeSelImage = ref AccessTools.FieldRefAccess<UIReplicatorWindow, Image>(UIRoot.instance.uiGame.replicator, "recipeSelImage");
                         recipeSelImage.gameObject.SetActive(false);
-                        UIRoot.instance.uiGame.replicator.OnTechUnlocked(0, 0);
+                        UIRoot.instance.uiGame.replicator.OnTechUnlocked(0, 0, true);
                         File.WriteAllText(jsonFilePath, JSON.ToJson(GridIndexDictionary));
                         selectedRecipeID = -1;
 
